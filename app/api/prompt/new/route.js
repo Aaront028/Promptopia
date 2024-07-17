@@ -1,18 +1,15 @@
 import { connectToDB } from '@utils/database'
 import Prompt from '@models/prompt'
 
-export const POST = async (req, res) => {
-  const { prompt, userId, tag } = await req.json()
-
-  if (!prompt || !userId || !tag) {
-    return res.status(400).json({ error: 'Missing field' })
-  }
+export const POST = async (req) => {
+  const { userId, prompt, tag } = await req.json()
 
   try {
     await connectToDB()
 
     const newPrompt = new Prompt({
       creator: userId,
+      prompt,
       tag,
     })
 
@@ -23,6 +20,6 @@ export const POST = async (req, res) => {
     })
   } catch (error) {
     console.log(error)
-    return res.status(500).json({ error: 'Something went wrong' })
+    return res.status(500).json({ error: 'Failed to create a new response' })
   }
 }
